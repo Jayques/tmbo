@@ -14,7 +14,7 @@ export const SUPABASE_URL = 'https://zfhupshmsajmcqyqzuul.supabase.co/rest/v1/';
 export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_AmXaPCVMyGklQNtlbfGTTQ__xMpehR5';
 
 // From tools/generate-vapid-keys.html (the PUBLIC key only). Leave as-is to skip push notifications.
-export const VAPID_PUBLIC_KEY = 'PASTE-YOUR-VAPID-PUBLIC-KEY-HERE';
+export const VAPID_PUBLIC_KEY = 'BNeppV-6-A8_S330-RKleU7ey7njqF5HirOHBQEkWwe0GaCVTOIJ0YLZv8rU8IDe24rnZ4ohBqOjZMIWXFlmte0';
 
 // Shown in Settings > About
 export const APP_VERSION = '1.0.0';
