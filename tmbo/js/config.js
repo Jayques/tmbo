@@ -7,11 +7,11 @@
 // =====================================================================
 
 // Supabase > Project Settings > API Keys (or Data API) > Project URL
-export const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+export const SUPABASE_URL = 'https://zfhupshmsajmcqyqzuul.supabase.co/rest/v1/';
 
 // Supabase > Project Settings > API Keys > Publishable key (sb_publishable_...)
 // Older projects: use the "anon public" key instead.
-export const SUPABASE_PUBLISHABLE_KEY = 'PASTE-YOUR-PUBLISHABLE-KEY-HERE';
+export const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_AmXaPCVMyGklQNtlbfGTTQ__xMpehR5';
 
 // From tools/generate-vapid-keys.html (the PUBLIC key only). Leave as-is to skip push notifications.
 export const VAPID_PUBLIC_KEY = 'PASTE-YOUR-VAPID-PUBLIC-KEY-HERE';
