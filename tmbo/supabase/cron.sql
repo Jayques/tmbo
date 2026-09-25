@@ -14,10 +14,10 @@ select cron.schedule(
   '*/5 * * * *',
   $$
   select net.http_post(
-    url     := 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/send-reminders',
+    url     := 'https://zfhupshmsajmcqyqzuul.supabase.co/functions/v1/send-reminders',
     headers := jsonb_build_object(
                  'Content-Type',  'application/json',
-                 'x-cron-secret', 'YOUR-CRON-SECRET'),
+                 'x-cron-secret', 'A_zLIrNg8tLKrFrYMkfCsGTalZsV82bV'),
     body    := '{}'::jsonb
   );
   $$
