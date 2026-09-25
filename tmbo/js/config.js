@@ -7,7 +7,7 @@
 // =====================================================================
 
 // Supabase > Project Settings > API Keys (or Data API) > Project URL
-export const SUPABASE_URL = 'https://zfhupshmsajmcqyqzuul.supabase.co/rest/v1/';
+export const SUPABASE_URL = 'https://zfhupshmsajmcqyqzuul.supabase.co';
 
 // Supabase > Project Settings > API Keys > Publishable key (sb_publishable_...)
 // Older projects: use the "anon public" key instead.
