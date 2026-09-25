@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TMBO · VAPID key generator</title>
+<style>
+  :root{--bg:#f5f6fa;--card:#fff;--text:#171a21;--muted:#6b7280;--border:#e3e6ec;--accent:#4f46e5}
+  @media (prefers-color-scheme:dark){:root{--bg:#0e1014;--card:#171a21;--text:#eceef3;--muted:#9aa0ac;--border:#2a2f3a}}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  main{max-width:640px;margin:0 auto;padding:32px 16px}
+  h1{font-size:1.5rem;margin:0 0 6px}
+  p{color:var(--muted);line-height:1.5}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:16px}
+  label{display:block;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:12px 0 6px}
+  textarea{width:100%;box-sizing:border-box;font:13px ui-monospace,Menlo,monospace;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);resize:none}
+  button{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:700;font-size:1rem;cursor:pointer}
+  .copy{background:transparent;color:var(--accent);padding:4px 0;font-size:.85rem}
+  .warn{color:#e5484d;font-weight:600}
+</style>
+</head>
+<body>
+<main>
+  <h1>TMBO · VAPID key generator</h1>
+  <p>Push notifications need a key pair. The keys are generated <b>in your browser</b> and are never sent anywhere.
+     Put the <b>public key</b> in <code>js/config.js</code> and in the Supabase secret <code>VAPID_PUBLIC_KEY</code>.
+     Put the <b>private key</b> <span class="warn">only</span> in the Supabase secret <code>VAPID_PRIVATE_KEY</code>.
+     Never put the private key in your code or on GitHub.</p>
+  <button id="gen">Generate keys</button>
+  <div class="card" id="out" hidden>
+    <label>Public key</label><textarea id="pub" rows="3" readonly></textarea><button class="copy" data-for="pub">Copy public key</button>
+    <label>Private key (keep secret)</label><textarea id="priv" rows="2" readonly></textarea><button class="copy" data-for="priv">Copy private key</button>
+    <label>A random CRON_SECRET you can use</label><textarea id="cron" rows="2" readonly></textarea><button class="copy" data-for="cron">Copy cron secret</button>
+  </div>
+  <p id="err" class="warn"></p>
+</main>
+<script>
+const b64u = (bytes) => btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const fromB64u = (s) => Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/') + '==='.slice((s.length + 3) % 4)), c => c.charCodeAt(0));
+document.getElementById('gen').onclick = async () => {
+  try {
+    const kp = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+    const jwk = await crypto.subtle.exportKey('jwk', kp.privateKey);
+    const pub = new Uint8Array([4, ...fromB64u(jwk.x), ...fromB64u(jwk.y)]);
+    document.getElementById('pub').value = b64u(pub);
+    document.getElementById('priv').value = jwk.d;
+    document.getElementById('cron').value = b64u(crypto.getRandomValues(new Uint8Array(24)));
+    document.getElementById('out').hidden = false;
+  } catch (e) {
+    document.getElementById('err').textContent = 'Your browser blocked key generation here. Open this page from your Netlify site (https) or in Chrome, then try again. (' + e.message + ')';
+  }
+};
+document.querySelectorAll('.copy').forEach(b => b.onclick = async () => {
+  const t = document.getElementById(b.dataset.for); t.select();
+  try { await navigator.clipboard.writeText(t.value); b.textContent = 'Copied!'; } catch { document.execCommand('copy'); b.textContent = 'Copied!'; }
+  setTimeout(() => b.textContent = b.textContent.replace('Copied!', 'Copy again'), 1500);
+});
+</script>
+</body>
+</html>

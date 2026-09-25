@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TMBO · There Must Be Order</title>
+<meta name="description" content="TMBO (There Must Be Order): a to-do list, calendar and study app with priority tiers, carry-over tasks, event countdowns and reminders.">
+<meta name="theme-color" content="#4f46e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TMBO">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-template="classic">
+<div class="boot" id="boot"><span class="logo" data-logo></span></div>
+
+<div class="app">
+  <header class="top">
+    <div class="brandrow">
+      <div class="brand"><span class="logo" data-logo></span>TMBO</div>
+      <div class="hdr-right">
+        <button class="iconbtn sm" id="hdrLock" aria-label="Lock TMBO now" hidden></button>
+        <button class="pill" id="syncPill"><i></i><span id="syncText">This device</span></button>
+      </div>
+    </div>
+    <div id="todoHead" hidden>
+      <div class="datenav">
+        <button class="iconbtn" id="prevDay" aria-label="Previous day"></button>
+        <button class="datebtn" id="dateBtn" aria-label="Jump to today"><b id="dateLabel"></b><small id="dateSub"></small></button>
+        <button class="iconbtn" id="nextDay" aria-label="Next day"></button>
+      </div>
+      <div class="week" id="week"></div>
+    </div>
+    <h1 class="viewtitle" id="viewTitle" hidden></h1>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="view active" id="view-home">
+      <div class="greet" id="greet"></div>
+      <div id="installSlot"></div>
+      <div id="heroSlot"></div>
+      <div class="card" style="margin-top:14px" id="top3"></div>
+      <div id="nextEvent"></div>
+      <div class="stats" id="stats"></div>
+    </section>
+
+    <!-- TO-DO -->
+    <section class="view" id="view-todo">
+      <div class="progress"><b id="progText">0 of 0 done</b><div class="bar"><i id="progBar"></i></div></div>
+      <div id="notice"></div>
+      <div id="todoList"></div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="view" id="view-calendar">
+      <div class="addrow"><b>Coming up</b><button class="smallbtn" id="addEventBtn">+ Add event</button></div>
+      <div id="eventList"></div>
+      <div class="cal-head" style="margin-top:16px">
+        <button class="iconbtn" id="prevMonth" aria-label="Previous month"></button>
+        <b id="monthLabel"></b>
+        <button class="iconbtn" id="nextMonth" aria-label="Next month"></button>
+      </div>
+      <div class="cal" id="cal"></div>
+      <div class="sec-title" id="agendaTitle"></div>
+      <div class="card" id="agenda"></div>
+      <button class="btn ghost full" id="openDay" style="margin-top:10px">Open this day's to-do list</button>
+    </section>
+
+    <!-- STUDY -->
+    <section class="view" id="view-study">
+      <div class="seg" id="studyMode"><button data-m="focus" class="on">Focus</button><button data-m="short">Short break</button><button data-m="long">Long break</button></div>
+      <div class="ring-wrap">
+        <svg class="ring" viewBox="0 0 240 240"><circle class="ring-bg" cx="120" cy="120" r="108"/><circle class="ring-fg" id="ringFg" cx="120" cy="120" r="108"/></svg>
+        <div class="ring-text"><div id="timeText">25:00</div><small id="timeLabel">Focus</small></div>
+      </div>
+      <input class="txt" id="subject" placeholder="What are you studying? (e.g., Statistics)" maxlength="60">
+      <div class="actions"><button class="btn ghost" id="tReset">Reset</button><button class="btn primary" id="tStart">Start</button></div>
+      <div class="sec-title">Focus length (minutes)</div>
+      <div class="seg" id="focusLen"><button data-v="15">15</button><button data-v="25" class="on">25</button><button data-v="45">45</button><button data-v="60">60</button></div>
+      <div class="sec-title">Today's sessions</div>
+      <div class="card" id="sessions"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div id="installSettings"></div>
+
+      <div class="sec-title">Account</div>
+      <div class="card" id="acctCard"></div>
+
+      <div class="sec-title">Home screen</div>
+      <div class="card">
+        <div class="block"><b>Your name</b><input class="txt" id="sName" maxlength="30" placeholder="Used in your greeting (optional)"></div>
+        <div class="row"><div><b>Graphic &amp; quotes</b><small>Pick a scene, colors, a quote, or write your own.</small></div><button class="btn ghost" id="sCustomize">Customize</button></div>
+      </div>
+
+      <div class="sec-title">Notifications</div>
+      <div class="card" id="notifCard"></div>
+
+      <div class="sec-title">App lock</div>
+      <div class="card" id="lockCard"></div>
+
+      <div class="sec-title">Appearance</div>
+      <div class="card">
+        <div class="block"><b>Theme</b><div class="seg" id="modeSeg"><button data-v="light">Light</button><button data-v="dark">Dark</button><button data-v="system">Auto</button></div></div>
+        <div class="block"><b>Accent color</b><div class="swatches" id="swatches"></div></div>
+        <div class="block"><b>Text size</b><div class="seg sizeseg" id="sizeSeg"><button data-v="0">A</button><button data-v="1">A</button><button data-v="2">A</button><button data-v="3">A</button></div></div>
+        <div class="block"><b>To-do template</b>
+          <div class="tpls" id="tpls">
+            <button class="tpl" data-v="classic"><div class="mini classic"><i></i><i></i><i></i></div>Classic</button>
+            <button class="tpl" data-v="compact"><div class="mini compact"><i></i><i></i><i></i><i></i><i></i></div>Compact</button>
+            <button class="tpl" data-v="planner"><div class="mini planner"><i></i><i></i><i></i><i></i></div>Planner</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-title">To-do list</div>
+      <div class="card">
+        <div class="block"><b>Priority tier names</b><div id="tierLabels"></div></div>
+        <div class="row"><div><b>Carry over by default</b><small>New one-time tasks move to the next day if not finished.</small></div><label class="switch"><input type="checkbox" id="sDefCarry"><span></span></label></div>
+        <div class="row"><div><b>Show completed tasks</b><small>Completed tasks sink to the bottom of the list.</small></div><label class="switch"><input type="checkbox" id="sShowDone"><span></span></label></div>
+      </div>
+
+      <div class="sec-title">Your data</div>
+      <div class="card" id="dataCard"></div>
+
+      <p class="banner" id="aboutLine">TMBO · There Must Be Order</p>
+    </section>
+  </main>
+</div>
+
+<button class="fab" id="fab" aria-label="Add task" hidden></button>
+
+<nav class="tabbar"><div class="tabbar-inner">
+  <button class="tab active" data-tab="home"><span data-ic="home"></span>Home</button>
+  <button class="tab" data-tab="todo"><span data-ic="list"></span>To-Do</button>
+  <button class="tab" data-tab="calendar"><span data-ic="cal"></span>Calendar</button>
+  <button class="tab" data-tab="study"><span data-ic="timer"></span>Study</button>
+  <button class="tab" data-tab="settings"><span data-ic="gear"></span>Settings</button>
+</div></nav>
+
+<!-- Task sheet -->
+<div class="sheet-wrap" id="sheetWrap">
+  <form class="sheet" id="taskForm" autocomplete="off">
+    <div class="grabber"></div>
+    <h3 id="sheetTitle">New task</h3>
+    <label class="f" for="fTitle">Task</label>
+    <input class="txt" id="fTitle" placeholder="What needs to get done?" maxlength="140">
+    <label class="f" for="fNotes">Notes <span class="opt">(optional)</span></label>
+    <textarea class="txt" id="fNotes" rows="2"></textarea>
+    <label class="f">Priority tier</label>
+    <div class="tierpick" id="fTier"></div>
+    <label class="f">How often?</label>
+    <div class="seg" id="fRepeat"><button type="button" data-v="once">One-time</button><button type="button" data-v="daily">Every day</button><button type="button" data-v="weekdays">Weekdays</button><button type="button" data-v="custom">Custom</button></div>
+    <div class="days" id="fDays" hidden></div>
+    <div class="two">
+      <div><label class="f" for="fDate" id="fDateLabel">Date</label><input class="txt" type="date" id="fDate"></div>
+      <div><label class="f" for="fRemind">Remind me <span class="opt">(optional)</span></label><input class="txt" type="time" id="fRemind"></div>
+    </div>
+    <button type="button" class="clearbtn" id="fRemindClear">Clear reminder</button>
+    <div class="row" id="carryRow"><div><b>Carry over if not finished</b><small id="carryHint"></small></div><label class="switch"><input type="checkbox" id="fCarry"><span></span></label></div>
+    <div class="actions">
+      <button type="button" class="btn danger" id="fDelete">Delete</button>
+      <button type="button" class="btn ghost" id="fCancel">Cancel</button>
+      <button type="submit" class="btn primary">Save</button>
+    </div>
+  </form>
+</div>
+
+<!-- Generic panel (customize, events, account, lock setup) -->
+<div class="sheet-wrap" id="panelWrap"><div class="sheet" id="panel"></div></div>
+
+<!-- Welcome / onboarding -->
+<div class="welcome" id="welcome">
+  <div class="welcome-hero"><div class="hero-bg" id="welcomeBg"></div><div class="hero-shade"></div>
+    <div class="inner"><div class="logo" data-logo></div><h1>TMBO</h1><p>There Must Be Order.</p></div>
+  </div>
+  <div class="welcome-body" id="welcomeBody"></div>
+</div>
+
+<!-- Lock screen -->
+<div class="lock" id="lockScreen">
+  <div class="hero-bg" id="lockBg"></div><div class="shade"></div>
+  <div class="lock-inner">
+    <div class="logo" data-logo></div>
+    <h2 id="lockTitle">Enter your PIN</h2>
+    <p class="lockmsg" id="lockMsg"></p>
+    <div id="lockBody"></div>
+    <button class="lightlink" id="forgotBtn">Forgot?</button>
+    <div class="forgot" id="forgotBox" hidden></div>
+  </div>
+</div>
+
+<div class="nstack" id="nstack"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<noscript><p style="padding:24px;text-align:center">TMBO needs JavaScript turned on.</p></noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
